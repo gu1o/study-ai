@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ topic.title }} · study-ai{% endblock %}
+{% block content %}
+{% set levels = {"easy": "fácil", "medium": "média", "hard": "difícil"} %}
+<hgroup>
+  <h1>{{ topic.title }}</h1>
+  <p><a href="/documents/{{ doc.id }}">← {{ doc.title }}</a></p>
+</hgroup>
+
+<details>
+  <summary>Resumo e pontos-chave</summary>
+  <p>{{ topic.summary }}</p>
+  <ul>{% for k in topic.key_points %}<li>{{ k }}</li>{% endfor %}</ul>
+</details>
+
+<article>
+  <form method="post" action="/topics/{{ topic.id }}/questions"
+        onsubmit="const b = this.querySelector('button'); b.disabled = true; b.ariaBusy = 'true'; b.textContent = 'Gerando…';">
+    <div class="grid">
+      <label>Múltipla escolha <input type="number" name="n_multiple_choice" value="5" min="0" max="10"></label>
+      <label>Discursivas <input type="number" name="n_open_ended" value="2" min="0" max="5"></label>
+      <label>Dificuldade
+        <select name="difficulty">
+          {% for value, label in levels.items() %}
+            <option value="{{ value }}" {{ "selected" if value == "medium" }}>{{ label | capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+    <button>Gerar questões</button>
+  </form>
+</article>
+
+{% for q in questions %}
+<article>
+  <p><strong>{{ loop.index }}.</strong> {{ q.statement }} <span class="muted">({{ levels[q.difficulty] }})</span></p>
+  <form hx-post="/questions/{{ q.id }}/answer" hx-target="#result-{{ q.id }}" hx-disabled-elt="find button">
+    {% if q.kind == "multiple_choice" %}
+      <fieldset>
+        {% for opt in q.options %}
+          <label><input type="radio" name="answer" value="{{ loop.index0 }}" required> {{ "%c" | format(65 + loop.index0) }}) {{ opt }}</label>
+        {% endfor %}
+      </fieldset>
+    {% else %}
+      <textarea name="answer" rows="5" maxlength="5000" required placeholder="Sua resposta"></textarea>
+    {% endif %}
+    <button class="outline">Responder</button>
+  </form>
+  <div id="result-{{ q.id }}"></div>
+</article>
+{% else %}
+<p class="muted">Nenhuma questão ainda. Gere acima.</p>
+{% endfor %}
+{% endblock %}

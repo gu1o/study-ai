@@ -1,0 +1,21 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Deploy (kept local, never versioned)
+deploy/
+Dockerfile
+docker-compose*.yml
+Caddyfile
+
+# User data
+uploads/
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Swap error responses too, so messages show up next to the form that failed -->
+  <meta name="htmx-config" content='{"responseHandling":[{"code":".*","swap":true}]}'>
+  <title>{% block title %}study-ai{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <style>
+    .ok { color: var(--pico-ins-color); }
+    .bad { color: var(--pico-del-color); }
+    .muted { color: var(--pico-muted-color); font-size: .9em; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <nav><ul><li><a href="/"><strong>study-ai</strong></a></li></ul></nav>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

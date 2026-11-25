@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Minhas aulas</h1>
+
+<article>
+  <form method="post" action="/documents" enctype="multipart/form-data"
+        onsubmit="const b = this.querySelector('button'); b.disabled = true; b.ariaBusy = 'true'; b.textContent = 'Resumindo…';">
+    <input name="subject" placeholder="Disciplina" required maxlength="100" list="subjects">
+    <datalist id="subjects">
+      {% for s in documents | map(attribute="subject") | unique %}<option value="{{ s }}">{% endfor %}
+    </datalist>
+    <input name="title" placeholder="Título (opcional, usa o nome do arquivo)" maxlength="200">
+    <input type="file" name="file" accept="application/pdf" required>
+    <button>Enviar e resumir</button>
+    <small class="muted">O resumo leva cerca de 1 minuto.</small>
+  </form>
+</article>
+
+{% for subject, docs in documents | groupby("subject") %}
+  <h3>{{ subject }}</h3>
+  <ul>
+    {% for d in docs %}<li><a href="/documents/{{ d.id }}">{{ d.title }}</a></li>{% endfor %}
+  </ul>
+{% else %}
+  <p class="muted">Nenhuma aula ainda.</p>
+{% endfor %}
+{% endblock %}

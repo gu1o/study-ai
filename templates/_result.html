@@ -1,0 +1,20 @@
+{% if q.kind == "multiple_choice" %}
+  {% if score == 10 %}
+    <p class="ok"><strong>Correto!</strong></p>
+  {% else %}
+    <p class="bad"><strong>Errado.</strong> Resposta certa: {{ "%c" | format(65 + q.correct_index) }}) {{ q.options[q.correct_index] }}</p>
+  {% endif %}
+  <p>{{ q.explanation }}</p>
+{% else %}
+  <p class="{{ 'ok' if score >= 7 else 'bad' }}"><strong>Nota: {{ score }}/10</strong></p>
+  <p>{{ result.feedback }}</p>
+  {% if result.missing %}
+    <p>Faltou:</p>
+    <ul>{% for m in result.missing %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  <details><summary>Resposta de referência</summary><p>{{ q.model_answer }}</p></details>
+{% endif %}
+<blockquote>
+  “{{ q.source_quote }}”
+  <footer><a href="/documents/{{ q.document_id }}/pdf#page={{ q.source_page }}" target="_blank">p. {{ q.source_page }}</a></footer>
+</blockquote>

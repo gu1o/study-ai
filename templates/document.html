@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.title }} · study-ai{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>{{ doc.title }}</h1>
+  <p>{{ doc.subject }} · <a href="/documents/{{ doc.id }}/pdf" target="_blank">abrir PDF</a></p>
+</hgroup>
+<p>{{ doc.overview }}</p>
+
+{% for t in topics %}
+<article>
+  <header>
+    <a href="/topics/{{ t.id }}"><strong>{{ t.title }}</strong></a><br>
+    <span class="muted">
+      p. {% for p in t.pages %}<a href="/documents/{{ doc.id }}/pdf#page={{ p }}" target="_blank">{{ p }}</a>{{ ", " if not loop.last }}{% endfor %}
+      {% set s = stats.get(t.id) %}
+      {% if s %} · {{ s.attempts }} respostas, média {{ "%.1f" | format(s.avg_score) }}/10{% endif %}
+    </span>
+  </header>
+  <p>{{ t.summary }}</p>
+  <ul>{% for k in t.key_points %}<li>{{ k }}</li>{% endfor %}</ul>
+  <a href="/topics/{{ t.id }}" role="button" class="outline">Estudar este tópico</a>
+</article>
+{% endfor %}
+{% endblock %}
